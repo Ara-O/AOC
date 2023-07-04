@@ -127,8 +127,9 @@ func main() {
 			valsToBePopped = append(valsToBePopped, poppedVal)
 		}
 
-		for _, val := range valsToBePopped {
-			allStacks[moveTo-1].push(val)
+		fmt.Println(valsToBePopped)
+		for i := 0; i < len(valsToBePopped); i++ {
+			allStacks[moveTo-1] = append(allStacks[moveTo-1], valsToBePopped[len(valsToBePopped)-(i+1)])
 		}
 
 		// fmt.Println(valsToBePopped)
