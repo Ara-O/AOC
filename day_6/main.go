@@ -33,13 +33,13 @@ func main() {
 		fmt.Println(scanner.Text())
 		for i, _ := range scanner.Text() {
 
-			if i <= len(scanner.Text())-4 {
-				markers := scanner.Text()[i : i+4]
+			if i <= len(scanner.Text())-14 {
+				markers := scanner.Text()[i : i+14]
 				duplicateFound := findDuplicates(markers)
 
 				if !duplicateFound {
 					fmt.Println("MArker found")
-					fmt.Println(i + 4)
+					fmt.Println(i + 14)
 					return
 				}
 			}
