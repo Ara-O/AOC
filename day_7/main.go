@@ -2,89 +2,38 @@ package main
 
 import (
 	"fmt"
-	"os/exec"
+	"os"
+	"path"
+	"strings"
 )
 
-type File struct {
-	fileSize int
-	fileName string
-}
-
-type Path struct {
-	parentDirectory string
-	directoryName   string
-	subDirectory    []Path
-	containingFiles []File
-}
-
-func (p *Path) addSubDirectory(directoryToAdd string, path Path) {
-
-}
-
 func main() {
-	// var currentDirectory *Path
-	// filesAreBeingListed := false
-	// fileData, err := os.Open("input.txt")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	input, _ := os.ReadFile("input.txt")
 
-	// scanner := bufio.NewScanner(fileData)
+	fs, cd := map[string]int{}, ""
+	for _, s := range strings.Split(strings.TrimSpace(string(input)), "\n") {
+		var size int
+		var name string
 
-	// var rootDirectoryStructure Path
-
-	// for scanner.Scan() {
-	// 	str := scanner.Text()
-	// 	// Commands based
-	// 	if str[0] == '$' {
-	// 		commands := strings.Split(str, " ")
-
-	// 		if commands[1] == "cd" {
-	// 			if commands[2] == "/" {
-	// 				rootDirectoryStructure = Path{
-	// 					parentDirectory: "", directoryName: "/",
-	// 				}
-	// 				currentDirectory = &rootDirectoryStructure
-	// 			} else {
-	// 				fmt.Println(rootDirectoryStructure)
-	// 			}
-	// 		}
-
-	// 		if commands[1] == "ls" {
-	// 			filesAreBeingListed = true
-	// 			fmt.Println(rootDirectoryStructure.subDirectory)
-	// 		}
-
-	// 		//Data based
-	// 	} else {
-	// 		if filesAreBeingListed {
-	// 			if strings.Contains(str, "dir") {
-	// 				currentDirectory.subDirectory = append(currentDirectory.subDirectory, Path{directoryName: strings.Split(str, " ")[1]})
-	// 			} else {
-	// 				fileSize, err := strconv.Atoi(strings.Split(str, " ")[0])
-	// 				if err != nil {
-	// 					fmt.Println(err)
-	// 				}
-	// 				currentDirectory.containingFiles = append(currentDirectory.containingFiles, File{
-	// 					fileName: strings.Split(str, " ")[1],
-	// 					fileSize: fileSize,
-	// 				})
-	// 			}
-	// 		}
-
-	// 	}
-	// }
-
-	// defer fileData.Close()
-	cmd := exec.Command("ls", "./")
-
-	// The `Output` method executes the command and
-	// collects the output, returning its value
-	out, err := cmd.Output()
-	if err != nil {
-		// if there was any error, print it here
-		fmt.Println("could not run command: ", err)
+		if strings.HasPrefix(s, "$ cd") {
+			cd = path.Join(cd, strings.Fields(s)[2])
+		} else if _, err := fmt.Sscanf(s, "%d %s", &size, &name); err == nil {
+			for d := cd; d != "/"; d = path.Dir(d) {
+				fs[d] += size
+			}
+			fs["/"] += size
+		}
 	}
-	// otherwise, print the output from running the command
-	fmt.Println("Output: ", string(out))
+
+	part1, part2 := 0, fs["/"]
+	for _, s := range fs {
+		if s <= 100000 {
+			part1 += s
+		}
+		if s+70000000-fs["/"] >= 30000000 && s < part2 {
+			part2 = s
+		}
+	}
+	fmt.Println(part1)
+	fmt.Println(part2)
 }
