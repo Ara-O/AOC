@@ -25,6 +25,7 @@ func main() {
 		}
 	}
 
+	fmt.Println(fs)
 	part1, part2 := 0, fs["/"]
 	for _, s := range fs {
 		if s <= 100000 {
